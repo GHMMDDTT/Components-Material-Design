@@ -10,24 +10,33 @@ public abstract class MaterialThemeDesign extends Resource {
 
 	public abstract int getColorOnContainer();
 	public abstract int getColorOnContainerUnchecked();
+
 	public abstract int getColorOnError();
 	public abstract int getColorOnErrorContainer();
+
 	public abstract int getColorOnPrimary();
 	public abstract int getColorOnPrimaryContainer();
 	public abstract int getColorOnPrimaryFixed();
 	public abstract int getColorOnPrimaryFixedVariant();
 	public abstract int getColorOnPrimarySurface();
+
 	public abstract int getColorOnSecondary();
 	public abstract int getColorOnSecondaryContainer();
 	public abstract int getColorOnSecondaryFixed();
 	public abstract int getColorOnSecondaryFixedVariant();
+
 	public abstract int getColorOnSurface();
 	public abstract int getColorOnSurfaceInverse();
 	public abstract int getColorOnSurfaceVariant();
+
 	public abstract int getColorOnTertiary();
 	public abstract int getColorOnTertiaryContainer();
 	public abstract int getColorOnTertiaryFixed();
 	public abstract int getColorOnTertiaryFixedVariant();
+
+	public abstract int getColorOnBackground();
+	public abstract int getColorOnBackgroundContainer();
+	public abstract int getColorOnBackgroundFloating();
 
 	public abstract int getColorOutline();
 	public abstract int getColorOutlineVariant();
@@ -73,6 +82,7 @@ public abstract class MaterialThemeDesign extends Resource {
 	public abstract int getColorSwitchThumbNormal();
 
 	public abstract int getColorBackground();
+	public abstract int getColorBackgroundContainer();
 	public abstract int getColorBackgroundFloating();
 
 	public abstract int getColorError();
@@ -107,6 +117,10 @@ public abstract class MaterialThemeDesign extends Resource {
 		@Override public int getColorOnTertiaryContainer()       { return 0xFF1E1C00; }
 		@Override public int getColorOnTertiaryFixed()           { return 0xFF1E1C00; }
 		@Override public int getColorOnTertiaryFixedVariant()    { return 0xFF4B481D; }
+
+		@Override public int getColorOnBackground()              { return 0xFF36261C; }
+		@Override public int getColorOnBackgroundContainer()     { return 0xFF483022; }
+		@Override public int getColorOnBackgroundFloating()      { return 0xFF170F09; }
 
 		@Override public int getColorOutline()                   { return 0xFF827169; }
 		@Override public int getColorOutlineVariant()            { return 0xFFD7C2B9; }
@@ -152,6 +166,7 @@ public abstract class MaterialThemeDesign extends Resource {
 		@Override public int getColorSwitchThumbNormal()         { return 0x64000001; }
 
 		@Override public int getColorBackground()                { return 0xD7000001; }
+		@Override public int getColorBackgroundContainer()       { return 0xFF808080; }
 		@Override public int getColorBackgroundFloating()        { return 0xFFFFFFFF; }
 
 		@Override public int getColorError()                     { return 0xFF910052; }
@@ -187,6 +202,10 @@ public abstract class MaterialThemeDesign extends Resource {
 		@Override public int getColorOnTertiaryContainer()       { return 0xFFEBE5AB; }
 		@Override public int getColorOnTertiaryFixed()           { return 0xFF1E1C00; }
 		@Override public int getColorOnTertiaryFixedVariant()    { return 0xFF4B471D; }
+
+		@Override public int getColorOnBackground()              { return 0xFFF1E8E5; }
+		@Override public int getColorOnBackgroundContainer()     { return 0xFFDBD3D0; }
+		@Override public int getColorOnBackgroundFloating()      { return 0xFFDEC6BC; }
 
 		@Override public int getColorOutline()                   { return 0xFF9F8D84; }
 		@Override public int getColorOutlineVariant()            { return 0xFF52443D; }
@@ -232,6 +251,7 @@ public abstract class MaterialThemeDesign extends Resource {
 		@Override public int getColorSwitchThumbNormal()         { return 0x63000001; }
 
 		@Override public int getColorBackground()                { return 0xD7000001; }
+		@Override public int getColorBackgroundContainer()       { return 0xFF110D0A; }
 		@Override public int getColorBackgroundFloating()        { return 0xFF424242; }
 
 		@Override public int getColorError()                     { return 0xFFFFDAD6; }

@@ -17,9 +17,7 @@ public class MaterialTheme {
 		this.themeDesignNight = new MaterialThemeDesign.MaterialThemeDesign$NightColor(context);
 	}
 
-	public MaterialThemeDesign getTheme() {
-		return isNightMode() ? themeDesignNight : themeDesignDay;
-	}
+	public final MaterialThemeDesign getTheme() { return isNightMode() ? getThemeDesignNight() : getThemeDesignDay(); }
 
 	public MaterialThemeDesign getThemeDesignDay() { return themeDesignDay; }
 

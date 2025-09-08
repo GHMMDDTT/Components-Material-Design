@@ -5,7 +5,7 @@ import android.util.Log;
 import com.mddt.components.material.design.kit.application.MaterialContext;
 import com.mddt.components.material.design.kit.resource.Resource;
 import com.mddt.components.material.design.kit.resource.binding.MaterialBinding;
-import com.mddt.components.material.design.kit.widget.view.design.MaterialView$Binding;
+import com.mddt.components.material.design.kit.widget.view.design.MaterialView.MaterialView$Binding;
 
 public abstract class MaterialLayout
 		extends Resource {

@@ -3,8 +3,7 @@ package com.mddt.components.material.design.kit.resource.layouts;
 import com.mddt.components.material.design.kit.application.MaterialContext;
 import com.mddt.components.material.design.kit.resource.Resource;
 import com.mddt.components.material.design.kit.resource.binding.MaterialBinding;
-import com.mddt.components.material.design.kit.widget.view.design.MaterialView;
-import com.mddt.components.material.design.kit.widget.view.design.MaterialView$Binding;
+import com.mddt.components.material.design.kit.widget.view.design.MaterialView.MaterialView$Binding;
 
 public abstract class MaterialLayoutBinding<T extends MaterialBinding>
 		extends Resource {
@@ -16,7 +15,9 @@ public abstract class MaterialLayoutBinding<T extends MaterialBinding>
 	public abstract T onInflate();
 
 	public final T getRoot() {
-		if (this._root == null) _root = (T) new MaterialView.MaterialView$Binding(getMaterialContext());
+		if (this._root == null) {
+			_root = (T) new MaterialView$Binding(getMaterialContext());
+		}
 		return _root;
 	}
 }

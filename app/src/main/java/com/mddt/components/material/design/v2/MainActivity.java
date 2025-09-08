@@ -1,14 +1,17 @@
 package com.mddt.components.material.design.v2;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.mddt.components.material.design.kit.application.MaterialActivity;
+import com.mddt.components.material.design.kit.resource.binding.MaterialBinding;
 import com.mddt.components.material.design.kit.resource.layouts.MaterialLayout;
 import com.mddt.components.material.design.kit.resource.layouts.MaterialLayoutBinding;
-import com.mddt.components.material.design.kit.widget.view.design.MaterialView$Binding;
+import com.mddt.components.material.design.kit.widget.view.design.MaterialView;
+import com.mddt.components.material.design.kit.widget.view.design.MaterialView.MaterialView$Binding;
 
 
 public class MainActivity
@@ -26,7 +29,7 @@ public class MainActivity
 	public MaterialLayout getMaterialLayout() {
 		return new MaterialLayout(getMaterialContext()) {
 			@Override
-			public MaterialView$Binding onInflate() {
+			public MaterialBinding onInflate() {
 				return MaterialView$LayoutBinding(new MyLayoutClass());
 			}
 		};
@@ -39,7 +42,7 @@ public class MainActivity
 
 		@Override
 		public MaterialView$Binding onInflate() {
-			return getRoot().backgroundColor(0xFF000000);
+			return getRoot().backgroundColor(getMaterialTheme().getTheme().getColorOnSurface());
 		}
 	}
 }

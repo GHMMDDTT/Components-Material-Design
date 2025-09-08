@@ -15,36 +15,39 @@ import com.mddt.components.material.design.kit.resource.layouts.MaterialLayout;
 import com.mddt.components.material.design.kit.resource.themes.MaterialTheme;
 import com.mddt.components.material.design.kit.widget.view.design.MaterialView;
 
-public abstract class MaterialActivity extends Activity implements MaterialContext {
-	private MaterialTheme theme;
+public class MaterialActivity extends Activity implements MaterialContext {
+	private MaterialTheme mMaterialTheme = new MaterialTheme(this);
 
 	public void onInitializeActivity(@Nullable Bundle savedInstanceState) { }
 
 	@Override
 	public void setMaterialTheme(MaterialTheme theme) {
-		this.theme = theme;
+		this.mMaterialTheme = theme;
 	}
 
 	@Override
 	public MaterialTheme getMaterialTheme() {
-		return theme;
+		return mMaterialTheme;
 	}
 
 	@Override
-	public MaterialContext getMaterialContext() {
+	public final MaterialContext getMaterialContext() {
 		return this;
 	}
 
-	public abstract void onCreateActivity(@Nullable Bundle savedInstanceState);
+	public void onCreateActivity(@Nullable Bundle savedInstanceState) {
+		throw new UnsupportedOperationException("Override 'onCreateActivity(savedInstanceState: Bundle): void' instead");
+	}
 
-	public abstract MaterialLayout getMaterialLayout();
+	public MaterialLayout getMaterialLayout() {
+		throw new UnsupportedOperationException("Override 'getMaterialLayout(): MaterialLayout' instead");
+	}
 
 	// Method remove for the 'Android-in-Java':
 
 	@Override
 	protected final void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTheme(androidx.appcompat.R.style.Theme_AppCompat_NoActionBar);
 		super.setContentView(getMaterialLayout().onInflate().getRoot());
 
 		setMaterialTheme(new MaterialTheme(getMaterialContext()));
@@ -79,11 +82,18 @@ public abstract class MaterialActivity extends Activity implements MaterialConte
 
 	@Override public View findViewById(int id) { throw new UnsupportedOperationException("Use 'findViewByIds(id: int): T' instead"); }
 
-	public <T extends MaterialView> T findViewByIds(int id) { return super.findViewById(id); }
+	public <T extends MaterialView> T getViewById(int id) { return super.findViewById(id); }
 
 	@Override public Context getContext() { return this; }
 
-	@Override public final void setTheme(int resid) { super.setTheme(resid); }
+	@Override
+	public final void setTheme(int resid) {
+		if (resid == 2131755554) {
+			super.setTheme(androidx.appcompat.R.style.Theme_AppCompat_NoActionBar);
+			return;
+		}
+		throw new UnsupportedOperationException("Use 'setMaterialTheme(theme: MaterialThemeDesign): void' instead");
+	}
 
 	@Override public final Resources getResources() { return super.getResources(); }
 }
