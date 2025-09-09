@@ -30,6 +30,7 @@ public class MaterialView
 	private final ListenerInformation mListenerInformation = new ListenerInformation();
 	private final ParametersInformation mParametersInformation = new ParametersInformation();
 	private final MaterialContext materialContext;
+	private MaterialBinding mMaterialBinding;
 
 	private final View.OnTouchListener _mListenerToucher = new View.OnTouchListener() {
 		private Timer timer;
@@ -105,6 +106,7 @@ public class MaterialView
 			MaterialView$Binding listener
 	) {
 		super(materialContext.getContext());
+		this.mMaterialBinding = listener;
 		listener._mView = this;
 		listener.onInflate();
 		this.materialContext = materialContext;
@@ -182,6 +184,10 @@ public class MaterialView
 	public OnMoveClickListener getOnMoveClickListener() { return mListenerInformation.mOnMoveClickListener; }
 
 	public final MaterialContext getMaterialContext() { return materialContext; }
+
+	public <T extends MaterialBinding> T getMaterialBinding() {
+		return (T) this.mMaterialBinding;
+	}
 
 	@Override
 	public void setPadding(
@@ -272,7 +278,7 @@ public class MaterialView
 
 		// ---------- Field : Started ---------- \\
 
-		private MaterialView _mView;
+		public MaterialView _mView;
 		private final LayoutParameters _mLayoutParams = new LayoutParameters(WRAP_CONTENT, WRAP_CONTENT);
 
 		// ---------- Field : Ended ---------- \\
@@ -342,12 +348,6 @@ public class MaterialView
 
 		public MaterialView$Binding onFocusChange(OnFocusChangeListener listener) { this._mView.setOnFocusChangeListener(listener); return this; }
 
-		public MaterialView$Binding onHover(OnHoverListener listener) { this._mView.setOnHoverListener(listener); return this; }
-
-		public MaterialView$Binding onLongClick(OnLongClickListener listener) { this._mView.setOnLongClickListener(listener); return this; }
-
-		public MaterialView$Binding onTouch(OnTouchListener listener) { this._mView.setOnTouchListener(listener); return this; }
-
 		public MaterialView$Binding onLayoutChange(OnLayoutChangeListener listener) { this._mView.addOnLayoutChangeListener(listener); return this; }
 
 		public MaterialView$Binding onAttachStateChange(OnAttachStateChangeListener listener) { this._mView.addOnAttachStateChangeListener(listener); return this; }
@@ -360,7 +360,7 @@ public class MaterialView
 
 		@CallSuper protected void requestLayout() { this._mView.setLayoutParameters(this._mLayoutParams); }
 
-		@Override public MaterialView getRoot() { return this._mView == null ? (this._mView = new MaterialView(getMaterialContext())) : this._mView; }
+		@Override public MaterialView getRoot() { return this._mView; }
 
 		// ---------- Method : Ended ---------- \\
 	}

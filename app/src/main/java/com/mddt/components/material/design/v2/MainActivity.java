@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.mddt.components.material.kit.application.MaterialActivity;
 import com.mddt.components.material.kit.resource.binding.MaterialBinding;
 import com.mddt.components.material.kit.resource.layouts.MaterialLayout;
+import com.mddt.components.material.kit.widget.framelayout.design.MaterialFrameLayout;
 import com.mddt.components.material.kit.widget.view.design.MaterialView;
 import com.mddt.components.material.kit.widget.view.design.MaterialView.MaterialView$Binding;
 
@@ -26,31 +27,16 @@ public class MainActivity
 	public MaterialLayout getMaterialLayout() {
 		return new MaterialLayout(getMaterialContext()) {
 			@Override
-			public MaterialBinding onInflate() {
-				return MaterialView$LayoutBinding(new MyLayoutClass());
-			}
+			public MaterialBinding onInflate() { return MaterialView$LayoutBinding(new MyLayoutClass()); }
 		};
 	}
 
 	public class MyLayoutClass extends MaterialView$Binding {
-		public MyLayoutClass() {
-			super(MainActivity.this.getMaterialContext());
-		}
+		public MyLayoutClass() { super(MainActivity.this.getMaterialContext()); }
 
 		@Override
 		public MaterialView$Binding onInflate() {
-			return backgroundColor(getMaterialTheme().getTheme().getColorOnSurface()).onHoldClick(new MaterialView.OnHoldClickListener() {
-				@Override
-				public void onHold(
-						MaterialView view,
-						long holdTime
-				) {
-					backgroundColor(getMaterialTheme().getTheme().getColorSurface());
-					if (holdTime > 500) backgroundColor(getMaterialTheme().getTheme().getColorSecondary());
-					if (holdTime > 1000) backgroundColor(getMaterialTheme().getTheme().getColorBackground());
-					if (holdTime > 1500) backgroundColor(getMaterialTheme().getTheme().getColorOnSurface());
-				}
-			});
+			return backgroundColor(getMaterialTheme().getTheme().getColorOnSurface());
 		}
 	}
 }
