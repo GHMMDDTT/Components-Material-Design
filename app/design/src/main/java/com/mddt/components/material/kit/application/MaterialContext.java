@@ -1,8 +1,8 @@
-package com.mddt.components.material.design.kit.application;
+package com.mddt.components.material.kit.application;
 
 import android.content.Context;
 
-import com.mddt.components.material.design.kit.resource.themes.MaterialTheme;
+import com.mddt.components.material.kit.resource.themes.MaterialTheme;
 
 public interface MaterialContext {
 	public abstract Context getContext();

@@ -1,12 +1,9 @@
-package com.mddt.components.material.design.kit.widget.view.design;
+package com.mddt.components.material.kit.widget.view.design;
 
-import static com.mddt.components.material.design.kit.widget.view.design.MaterialView.LayoutParameters.WRAP_CONTENT;
-import static com.mddt.components.material.design.kit.widget.view.design.MaterialView.LayoutParameters.MATCH_PARENT;
+import static com.mddt.components.material.kit.widget.view.design.MaterialView.LayoutParameters.WRAP_CONTENT;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +12,15 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 
-import com.mddt.components.material.design.kit.application.MaterialContext;
-import com.mddt.components.material.design.kit.resource.binding.MaterialBinding;
-import com.mddt.components.material.design.kit.resource.layouts.MaterialLayoutBinding;
+import com.mddt.components.material.kit.application.MaterialContext;
+import com.mddt.components.material.kit.resource.binding.MaterialBinding;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MaterialView
 		extends View {
@@ -34,11 +32,11 @@ public class MaterialView
 	private final MaterialContext materialContext;
 
 	private final View.OnTouchListener _mListenerToucher = new View.OnTouchListener() {
-		private Handler holdHandler = new Handler(Looper.getMainLooper()); // Usa Looper.getMainLooper()
-		private Runnable holdRunnable;
+		private Timer timer;
+		private TimerTask holdRunnable;
 		private long pressStartTime = 0;
 
-		private static final long HOLD_THRESHOLD_MS = 250;
+		private static final long HOLD_THRESHOLD_MS = 0;
 
 		@Override
 		public boolean onTouch(
@@ -53,27 +51,37 @@ public class MaterialView
 						mListenerInformation.mOnPressedListener.onPressed(MaterialView.this);
 					}
 
-					holdRunnable = new Runnable() {
+					holdRunnable = new TimerTask() {
 						@Override
 						public void run() {
-							if (mListenerInformation.mOnHoldListener != null) {
+							if (mListenerInformation.mOnHoldClickListener != null) {
 								long holdDuration = System.currentTimeMillis() - pressStartTime;
-								mListenerInformation.mOnHoldListener.onHold(MaterialView.this, holdDuration);
+								mListenerInformation.mOnHoldClickListener.onHold(MaterialView.this, holdDuration);
 							}
 						}
 					};
-					holdHandler.postDelayed(holdRunnable, HOLD_THRESHOLD_MS);
+					timer = new Timer();
+					timer.schedule(holdRunnable, HOLD_THRESHOLD_MS, 50);
 					return true;
 				}
 				case MotionEvent.ACTION_MOVE: {
+					if (mListenerInformation.mOnMoveClickListener != null) {
+						mListenerInformation.mOnMoveClickListener.onMoveClick(MaterialView.this, motionEvent.getX(), motionEvent.getY());
+						if (isInside(motionEvent.getX(), motionEvent.getY())) {
+							mListenerInformation.mOnMoveClickListener.onMoveClickInside(MaterialView.this);
+						} else {
+							mListenerInformation.mOnMoveClickListener.onMoveClickOutside(MaterialView.this);
+						}
+					}
 					break;
 				}
 				case MotionEvent.ACTION_UP: {
-					holdHandler.removeCallbacks(holdRunnable);
 					if (mListenerInformation.mOnReleasedListener != null) {
 						mListenerInformation.mOnReleasedListener.onReleased(MaterialView.this);
 					}
 					pressStartTime = 0;
+					timer.purge();
+					timer.cancel();
 					break;
 				}
 			}
@@ -94,10 +102,10 @@ public class MaterialView
 
 	public MaterialView(
 			MaterialContext materialContext,
-			MaterialLayoutBinding<MaterialView$Binding> listener
+			MaterialView$Binding listener
 	) {
 		super(materialContext.getContext());
-		listener.getRoot()._mView = this;
+		listener._mView = this;
 		listener.onInflate();
 		this.materialContext = materialContext;
 	}
@@ -110,7 +118,7 @@ public class MaterialView
 
 	public void setLayoutParameters(LayoutParameters params) {
 		this.mParametersInformation.mLayoutParameters = params;
-		invalidate();
+		this.requestLayout();
 	}
 
 	public LayoutParameters getLayoutParameters() { return this.mParametersInformation.mLayoutParameters; }
@@ -118,14 +126,14 @@ public class MaterialView
 	public void setMarginParameters(MarginParameters params) {
 		this.mListenerInformation.mMarginParameters = params;
 		this.mListenerInformation.mMarginParameters.context = this.getContext();
-		invalidate();
+		this.requestLayout();
 	}
 
 	public MarginParameters getMarginParameters() { return this.mListenerInformation.mMarginParameters; }
 
 	public void setOnMarginChangedListener(OnMarginChangeListener listener) {
 		this.mParametersInformation.mOnMarginChangeListener = listener;
-		this.invalidate();
+		this.requestLayout();
 	}
 
 	public OnMarginChangeListener getOnMarginChangedListener() { return mParametersInformation.mOnMarginChangeListener; }
@@ -133,38 +141,47 @@ public class MaterialView
 	public void setPaddingParameter(PaddingParameters padding) {
 		this.mParametersInformation.mPaddingParameters = padding;
 		this.mParametersInformation.mPaddingParameters.context = this.getContext();
-		invalidate();
+		this.requestLayout();
 	}
 
 	public PaddingParameters getPaddingParameters() { return this.mParametersInformation.mPaddingParameters; }
 
 	public void setOnPaddingChangedListener(OnPaddingChangeListener listener) {
 		this.mListenerInformation.mOnPaddingChangeListener = listener;
-		this.invalidate();
+		this.requestLayout();
 	}
 
 	public OnPaddingChangeListener getOnPaddingChangedListener() { return mListenerInformation.mOnPaddingChangeListener; }
 
 	public void setOnPressedListener(OnPressedListener listener) {
 		this.mListenerInformation.mOnPressedListener = listener;
-		this.invalidate();
+		this.requestLayout();
 	}
 
 	public OnPressedListener getOnPressedListener() { return mListenerInformation.mOnPressedListener; }
 
 	public void setOnReleasedListener(OnReleasedListener listener) {
 		this.mListenerInformation.mOnReleasedListener = listener;
-		this.invalidate();
+		this.requestLayout();
 	}
 
 	public OnReleasedListener getOnReleasedListener() { return mListenerInformation.mOnReleasedListener; }
 
-	public void setOnHoldListener(OnHoldListener listener) {
-		this.mListenerInformation.mOnHoldListener = listener;
-		this.invalidate();
+	public void setOnHoldListener(OnHoldClickListener listener) {
+		this.mListenerInformation.mOnHoldClickListener = listener;
+		this.requestLayout();
 	}
 
-	public OnHoldListener getOnHoldListener() { return mListenerInformation.mOnHoldListener; }
+	public OnHoldClickListener getOnHoldListener() { return mListenerInformation.mOnHoldClickListener; }
+
+	public void setOnMoveClickListener(OnMoveClickListener listener) {
+		this.mListenerInformation.mOnMoveClickListener = listener;
+		this.requestLayout();
+	}
+
+	public OnMoveClickListener getOnMoveClickListener() { return mListenerInformation.mOnMoveClickListener; }
+
+	public final MaterialContext getMaterialContext() { return materialContext; }
 
 	@Override
 	public void setPadding(
@@ -208,9 +225,14 @@ public class MaterialView
 
 	@Override public void setOnTouchListener(OnTouchListener listener) { throw new UnsupportedOperationException("Not supported the 'void setOnTouchListener(listener: OnTouchListener)' method"); }
 
+	@Override public void setBackgroundResource(int resid) { throw new UnsupportedOperationException("Not supported the 'void setBackgroundResource(resid: int)' method, use the 'setBackground(drawable: Drawable)' method instead"); }
+
+	@Override public void setOnHoverListener(OnHoverListener listener) { throw new UnsupportedOperationException("Not supported the 'void setOnHoverListener(listener: OnHoverListener)' method, use the 'setOnMoveClickListener(listener: OnMoveClickListener)' method instead"); }
+
+	@CallSuper
 	@Override
-	public void invalidate() {
-		super.invalidate();
+	public void requestLayout() {
+		super.requestLayout();
 		if (this.mParametersInformation.mLayoutParameters != null) {
 			super.setLayoutParams(new ViewGroup.MarginLayoutParams(this.mParametersInformation.mLayoutParameters.mWidth, this.mParametersInformation.mLayoutParameters.mHeight) {{
 				if (mListenerInformation.mMarginParameters != null) {
@@ -232,15 +254,20 @@ public class MaterialView
 		super.setOnTouchListener(_mListenerToucher);
 	}
 
-	public final MaterialContext getMaterialContext() {
-		return materialContext;
+	private boolean isInside(float positionX, float positionY) {
+		float X = getTranslationX();
+		float Y = getTranslationY();
+		return positionX >= X && positionX <= X + this.getWidth() &&
+				positionY >= Y && positionY <= Y + this.getHeight();
 	}
+
+	public boolean isDirectionRightToLeft() { return this.getContext().getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL; }
 
 	// ---------- Method : Ended ---------- \\
 
 	// ---------- Class : Started ---------- \\
 
-	public static class MaterialView$Binding
+	public abstract static class MaterialView$Binding
 			extends MaterialBinding {
 
 		// ---------- Field : Started ---------- \\
@@ -261,9 +288,9 @@ public class MaterialView
 
 		// ---------- Method : Started ---------- \\
 
-		public MaterialView$Binding width(int width) { this._mLayoutParams.mWidth = width; invalidate(); return this; }
+		public MaterialView$Binding width(int width) { this._mLayoutParams.mWidth = width; this.requestLayout(); return this; }
 
-		public MaterialView$Binding height(int height) { this._mLayoutParams.mHeight = height;  invalidate(); return this; }
+		public MaterialView$Binding height(int height) { this._mLayoutParams.mHeight = height;  this.requestLayout(); return this; }
 
 		public MaterialView$Binding enabled(boolean enabled) { this._mView.setEnabled(enabled); return this; }
 
@@ -275,11 +302,55 @@ public class MaterialView
 
 		public MaterialView$Binding backgroundColor(int color) { this._mView.setBackgroundColor(color); return this; }
 
+		public MaterialView$Binding alpha(float alpha) { this._mView.setAlpha(alpha); return this; }
+
+		public MaterialView$Binding elevation(float elevation) { this._mView.setElevation(elevation); return this; }
+
+		public MaterialView$Binding rotation(float rotation) { this._mView.setRotation(rotation); return this; }
+
+		public MaterialView$Binding rotationX(float rotationX) { this._mView.setRotationX(rotationX); return this; }
+
+		public MaterialView$Binding rotationY(float rotationY) { this._mView.setRotationY(rotationY); return this; }
+
+		public MaterialView$Binding translationX(float translationX) { this._mView.setTranslationX(translationX); return this; }
+
+		public MaterialView$Binding translationY(float translationY) { this._mView.setTranslationY(translationY); return this; }
+
+		public MaterialView$Binding translationZ(float translationY) { this._mView.setTranslationZ(translationY); return this; }
+
+		public MaterialView$Binding scaleX(float scaleX) { this._mView.setScaleX(scaleX); return this; }
+
+		public MaterialView$Binding scaleY(float scaleY) { this._mView.setScaleY(scaleY); return this; }
+
+		public MaterialView$Binding pivotX(float pivotX) { this._mView.setPivotX(pivotX); return this; }
+
+		public MaterialView$Binding pivotY(float pivotY) { this._mView.setPivotY(pivotY); return this; }
+
+		public MaterialView$Binding z(float z) { this._mView.setZ(z); return this; }
+
+		public MaterialView$Binding y(float zTranslation) { this._mView.setY(zTranslation); return this; }
+
+		public MaterialView$Binding x(float xTranslation) { this._mView.setX(xTranslation); return this; }
+
 		public MaterialView$Binding onPress(OnPressedListener listener) { this._mView.setOnPressedListener(listener); return this; }
 
 		public MaterialView$Binding onRelease(OnReleasedListener listener) { this._mView.setOnReleasedListener(listener); return this; }
 
-		public MaterialView$Binding onHold(OnHoldListener listener) { this._mView.setOnHoldListener(listener); return this; }
+		public MaterialView$Binding onHoldClick(OnHoldClickListener listener) { this._mView.setOnHoldListener(listener); return this; }
+
+		public MaterialView$Binding onMoveClick(OnMoveClickListener listener) { this._mView.setOnMoveClickListener(listener); return this; }
+
+		public MaterialView$Binding onFocusChange(OnFocusChangeListener listener) { this._mView.setOnFocusChangeListener(listener); return this; }
+
+		public MaterialView$Binding onHover(OnHoverListener listener) { this._mView.setOnHoverListener(listener); return this; }
+
+		public MaterialView$Binding onLongClick(OnLongClickListener listener) { this._mView.setOnLongClickListener(listener); return this; }
+
+		public MaterialView$Binding onTouch(OnTouchListener listener) { this._mView.setOnTouchListener(listener); return this; }
+
+		public MaterialView$Binding onLayoutChange(OnLayoutChangeListener listener) { this._mView.addOnLayoutChangeListener(listener); return this; }
+
+		public MaterialView$Binding onAttachStateChange(OnAttachStateChangeListener listener) { this._mView.addOnAttachStateChangeListener(listener); return this; }
 
 		public MaterialView$Binding onMarginChange(OnMarginChangeListener listener) { this._mView.setOnMarginChangedListener(listener); return this; }
 
@@ -287,7 +358,7 @@ public class MaterialView
 
 		public <T extends MaterialView> T findSubRootByIdAndGet(int id) { return this._mView.findViewById(id); }
 
-		@CallSuper protected void invalidate() { this._mView.setLayoutParameters(this._mLayoutParams); }
+		@CallSuper protected void requestLayout() { this._mView.setLayoutParameters(this._mLayoutParams); }
 
 		@Override public MaterialView getRoot() { return this._mView == null ? (this._mView = new MaterialView(getMaterialContext())) : this._mView; }
 
@@ -482,8 +553,8 @@ public class MaterialView
 		public abstract int getPaddingRightOffset();
 		public abstract int getPaddingBottomOffset();
 
-		public abstract int getPaddingHorizontalOffset();
-		public abstract int getPaddingVerticalOffset();
+		public int getPaddingHorizontalOffset() { return 0; }
+		public int getPaddingVerticalOffset() { return 0; }
 
 		public abstract int getPaddingStartOffset();
 		public abstract int getPaddingEndOffset();
@@ -636,8 +707,8 @@ public class MaterialView
 		public abstract int getMarginRightOffset();
 		public abstract int getMarginBottomOffset();
 
-		public abstract int getMarginHorizontalOffset();
-		public abstract int getMarginVerticalOffset();
+		public int getMarginHorizontalOffset() { return 0; }
+		public int getMarginVerticalOffset() { return 0; }
 
 		public abstract int getMarginStartOffset();
 		public abstract int getMarginEndOffset();
@@ -649,7 +720,14 @@ public class MaterialView
 
 	public static abstract class OnReleasedListener { public abstract void onReleased(MaterialView view); }
 
-	public static abstract class OnHoldListener { public abstract void onHold(MaterialView view, long holdTime); }
+	public static abstract class OnHoldClickListener { public abstract void onHold(MaterialView view, long holdTime); }
+
+	public static abstract class OnMoveClickListener {
+		public abstract void onMoveClick(MaterialView view, float x, float y);
+
+		public void onMoveClickInside(MaterialView view) { }
+		public void onMoveClickOutside(MaterialView view) { }
+	}
 
 	public static abstract class OnPaddingChangeListener { public abstract void onPaddingChange(int left, int top, int right, int bottom); }
 
@@ -672,7 +750,9 @@ public class MaterialView
 
 		private OnReleasedListener mOnReleasedListener;
 
-		private OnHoldListener mOnHoldListener;
+		private OnHoldClickListener mOnHoldClickListener;
+
+		private OnMoveClickListener mOnMoveClickListener;
 	}
 
 	// ---------- Class : Ended ---------- \\

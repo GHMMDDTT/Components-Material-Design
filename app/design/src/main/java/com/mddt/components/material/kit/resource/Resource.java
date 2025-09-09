@@ -1,7 +1,6 @@
-package com.mddt.components.material.design.kit.resource;
+package com.mddt.components.material.kit.resource;
 
-import com.mddt.components.material.design.kit.application.MaterialContext;
-import com.mddt.components.material.design.kit.resource.themes.MaterialTheme;
+import com.mddt.components.material.kit.application.MaterialContext;
 
 public abstract class Resource {
 	private final MaterialContext context;

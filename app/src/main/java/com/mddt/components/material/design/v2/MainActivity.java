@@ -1,18 +1,15 @@
 package com.mddt.components.material.design.v2;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.mddt.components.material.design.kit.application.MaterialActivity;
-import com.mddt.components.material.design.kit.resource.binding.MaterialBinding;
-import com.mddt.components.material.design.kit.resource.layouts.MaterialLayout;
-import com.mddt.components.material.design.kit.resource.layouts.MaterialLayoutBinding;
-import com.mddt.components.material.design.kit.widget.view.design.MaterialView;
-import com.mddt.components.material.design.kit.widget.view.design.MaterialView.MaterialView$Binding;
-
+import com.mddt.components.material.kit.application.MaterialActivity;
+import com.mddt.components.material.kit.resource.binding.MaterialBinding;
+import com.mddt.components.material.kit.resource.layouts.MaterialLayout;
+import com.mddt.components.material.kit.widget.view.design.MaterialView;
+import com.mddt.components.material.kit.widget.view.design.MaterialView.MaterialView$Binding;
 
 public class MainActivity
 		extends MaterialActivity {
@@ -35,14 +32,25 @@ public class MainActivity
 		};
 	}
 
-	public class MyLayoutClass extends MaterialLayoutBinding<MaterialView$Binding> {
+	public class MyLayoutClass extends MaterialView$Binding {
 		public MyLayoutClass() {
 			super(MainActivity.this.getMaterialContext());
 		}
 
 		@Override
 		public MaterialView$Binding onInflate() {
-			return getRoot().backgroundColor(getMaterialTheme().getTheme().getColorOnSurface());
+			return backgroundColor(getMaterialTheme().getTheme().getColorOnSurface()).onHoldClick(new MaterialView.OnHoldClickListener() {
+				@Override
+				public void onHold(
+						MaterialView view,
+						long holdTime
+				) {
+					backgroundColor(getMaterialTheme().getTheme().getColorSurface());
+					if (holdTime > 500) backgroundColor(getMaterialTheme().getTheme().getColorSecondary());
+					if (holdTime > 1000) backgroundColor(getMaterialTheme().getTheme().getColorBackground());
+					if (holdTime > 1500) backgroundColor(getMaterialTheme().getTheme().getColorOnSurface());
+				}
+			});
 		}
 	}
 }

@@ -1,7 +1,7 @@
-package com.mddt.components.material.design.kit.resource.binding;
+package com.mddt.components.material.kit.resource.binding;
 
-import com.mddt.components.material.design.kit.application.MaterialContext;
-import com.mddt.components.material.design.kit.widget.view.design.MaterialView;
+import com.mddt.components.material.kit.application.MaterialContext;
+import com.mddt.components.material.kit.widget.view.design.MaterialView;
 
 public abstract class MaterialBinding {
 	private final MaterialContext context;
@@ -14,6 +14,8 @@ public abstract class MaterialBinding {
 	public final MaterialContext getMaterialContext() {
 		return this.context;
 	}
+
+	public abstract  <T extends MaterialBinding> T onInflate();
 
 	public MaterialView getRoot() { return null; }
 }

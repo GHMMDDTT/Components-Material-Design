@@ -1,8 +1,8 @@
-package com.mddt.components.material.design.kit.resource.themes;
+package com.mddt.components.material.kit.resource.themes;
 
 import android.content.res.Configuration;
 
-import com.mddt.components.material.design.kit.application.MaterialContext;
+import com.mddt.components.material.kit.application.MaterialContext;
 
 public class MaterialTheme {
 	private final MaterialContext context;
